@@ -140,4 +140,16 @@ class DeviceTest {
         // THEN - Can be deleted
         assertThat(canDelete).isTrue();
     }
+
+    @Test
+    void shouldNotAllowDeletionWhenInUse() {
+        // GIVEN - A device in use
+        Device device = Device.create("iPhone 15", "Apple", DeviceState.IN_USE);
+
+        // WHEN - Checking if can be deleted
+        boolean canDelete = device.canBeDeleted();
+
+        // THEN - Cannot be deleted
+        assertThat(canDelete).isFalse();
+    }
 }
