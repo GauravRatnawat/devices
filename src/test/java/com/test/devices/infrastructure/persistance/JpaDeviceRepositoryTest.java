@@ -104,5 +104,24 @@ class JpaDeviceRepositoryTest {
                 .containsExactlyInAnyOrder("iPhone 15", "Samsung Galaxy S23", "Pixel 8");
     }
 
+    @Test
+    @Transactional
+    void shouldFindDevicesByBrand() {
+        // GIVEN
+        repository.save(Device.create("iPhone 15", "Apple", DeviceState.AVAILABLE));
+        repository.save(Device.create("iPhone 14", "Apple", DeviceState.IN_USE));
+        repository.save(Device.create("Samsung Galaxy S23", "Samsung", DeviceState.AVAILABLE));
+
+        // WHEN
+        List<Device> appleDevices = repository.findByBrand("Apple");
+
+        // THEN
+        assertThat(appleDevices).hasSize(2);
+        assertThat(appleDevices).extracting(Device::getBrand)
+                .containsOnly("Apple");
+        assertThat(appleDevices).extracting(Device::getName)
+                .containsExactlyInAnyOrder("iPhone 15", "iPhone 14");
+    }
+
    
 }
