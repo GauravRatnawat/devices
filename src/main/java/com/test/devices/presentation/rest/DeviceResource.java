@@ -55,5 +55,12 @@ public class DeviceResource {
         return Response.ok(response).build();
     }
 
-
+    @GET
+    public Response listDevices(
+            @QueryParam("brand") String brand,
+            @QueryParam("state") String state) {
+        logger.info("GET /api/v1/devices - Listing devices");
+        List<DeviceResponse> devices = listDevicesUseCase.execute(brand, state != null ? com.test.devices.domain.model.DeviceState.valueOf(state) : null);
+        return Response.ok(devices).build();
+    }
 }
