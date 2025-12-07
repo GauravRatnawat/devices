@@ -7,6 +7,10 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
@@ -39,4 +43,22 @@ class JpaDeviceRepositoryTest {
         assertThat(savedDevice.getState()).isEqualTo(DeviceState.AVAILABLE);
         assertThat(savedDevice.getCreationTime()).isNotNull();
     }
+
+    @Test
+    @Transactional
+    void shouldUpdateExistingDevice() {
+        // GIVEN - Save a device first
+        Device device = Device.create("iPhone 15", "Apple", DeviceState.AVAILABLE);
+        Device savedDevice = repository.save(device);
+        Long deviceId = savedDevice.getId();
+
+        // WHEN - Update the device
+        savedDevice.updateState(DeviceState.IN_USE);
+        Device updatedDevice = repository.save(savedDevice);
+
+        // THEN
+        assertThat(updatedDevice.getId()).isEqualTo(deviceId);
+        assertThat(updatedDevice.getState()).isEqualTo(DeviceState.IN_USE);
+    }
+
 }
