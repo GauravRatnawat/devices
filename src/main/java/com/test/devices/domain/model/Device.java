@@ -1,0 +1,45 @@
+package com.test.devices.domain.model;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+public class Device {
+
+    private Long id;
+    private String name;
+    private String brand;
+    private DeviceState state;
+    private LocalDateTime creationTime;
+
+    private Device(Long id, String name, String brand, DeviceState state, LocalDateTime creationTime) {
+        this.id = id;
+        this.name = name;
+        this.brand = brand;
+        this.state = state;
+        this.creationTime = creationTime;
+    }
+
+    public static Device create(String name, String brand, DeviceState state) {
+        return new Device(null, name, brand, state, LocalDateTime.now());
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public DeviceState getState() {
+        return state;
+    }
+
+    public LocalDateTime getCreationTime() {
+        return creationTime;
+    }
+}
