@@ -1,5 +1,6 @@
 package com.test.devices.application.usecase;
 
+import com.test.devices.application.exception.DeviceNotFoundException;
 import com.test.devices.domain.model.Device;
 import com.test.devices.domain.model.DeviceState;
 import com.test.devices.domain.repository.DeviceRepository;
@@ -52,6 +53,23 @@ class DeleteDeviceUseCaseTest {
         // WHEN/THEN - Exception is thrown
         assertThatThrownBy(() -> deleteDeviceUseCase.execute(1L))
                 .isInstanceOf(DeviceNotFoundException.class);
+
+        verify(deviceRepository, times(1)).findById(1L);
+        verify(deviceRepository, never()).delete(any(Device.class));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenDeletingInUseDevice() {
+        // GIVEN - Device in use
+        Device device = Device.create("iPhone 15", "Apple", DeviceState.IN_USE);
+        device.setId(1L);
+
+        when(deviceRepository.findById(1L)).thenReturn(Optional.of(device));
+
+        // WHEN/THEN - Exception is thrown
+        assertThatThrownBy(() -> deleteDeviceUseCase.execute(1L))
+                .isInstanceOf(DeviceValidationException.class)
+                .hasMessageContaining("Cannot delete device that is in use");
 
         verify(deviceRepository, times(1)).findById(1L);
         verify(deviceRepository, never()).delete(any(Device.class));
