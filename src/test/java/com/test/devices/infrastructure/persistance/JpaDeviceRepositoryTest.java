@@ -167,5 +167,21 @@ class JpaDeviceRepositoryTest {
         assertThat(devices).isEmpty();
     }
 
-   
+    @Test
+    @Transactional
+    void shouldDeleteDevice() {
+        // GIVEN
+        Device device = Device.create("iPhone 15", "Apple", DeviceState.AVAILABLE);
+        Device savedDevice = repository.save(device);
+        Long deviceId = savedDevice.getId();
+
+        // WHEN
+        repository.delete(savedDevice);
+
+        // THEN
+        Optional<Device> deletedDevice = repository.findById(deviceId);
+        assertThat(deletedDevice).isEmpty();
+    }
+
+
 }

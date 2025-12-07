@@ -4,11 +4,13 @@ import com.test.devices.application.dto.CreateDeviceRequest;
 import com.test.devices.application.dto.DeviceResponse;
 import com.test.devices.domain.model.Device;
 import com.test.devices.domain.repository.DeviceRepository;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 import java.util.Objects;
 
+@ApplicationScoped
 public class CreateDeviceUseCase {
 
     @Inject
