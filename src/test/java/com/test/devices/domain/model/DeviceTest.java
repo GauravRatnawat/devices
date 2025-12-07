@@ -68,7 +68,7 @@ class DeviceTest {
         // WHEN/THEN - Creating device throws exception
         assertThatThrownBy(() -> Device.create("iPhone", brand, DeviceState.AVAILABLE))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Name cannot be blank");
+                .hasMessageContaining("Brand cannot be blank");
     }
 
     @Test
@@ -98,13 +98,23 @@ class DeviceTest {
         // GIVEN - A device
         Device device = Device.create("iPhone 15", "Apple", DeviceState.AVAILABLE);
 
-        // WHEN - Updating state
-        device.updateState(null);
-
-        // THEN 
+        // WHEN
+        // THEN
         assertThatThrownBy(() -> device.updateState(null))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("State cannot be null");
     }
 
+    @Test
+    void shouldUpdateDeviceDetailsWhenNotInUse() {
+        // GIVEN - A device not in use
+        Device device = Device.create("iPhone 15", "Apple", DeviceState.AVAILABLE);
+
+        // WHEN - Updating details
+        device.updateDetails("iPhone 15 Pro", "Apple Inc");
+
+        // THEN - Details are updated
+        assertThat(device.getName()).isEqualTo("iPhone 15 Pro");
+        assertThat(device.getBrand()).isEqualTo("Apple Inc");
+    }
 }
