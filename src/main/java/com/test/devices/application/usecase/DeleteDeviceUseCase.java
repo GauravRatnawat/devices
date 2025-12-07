@@ -1,6 +1,7 @@
 package com.test.devices.application.usecase;
 
 import com.test.devices.application.exception.DeviceNotFoundException;
+import com.test.devices.application.exception.DeviceValidationException;
 import com.test.devices.domain.model.Device;
 import com.test.devices.domain.repository.DeviceRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -21,6 +22,10 @@ public class DeleteDeviceUseCase {
 
         Device device = deviceRepository.findById(id)
                 .orElseThrow(() -> new DeviceNotFoundException(id));
+
+        if (!device.canBeDeleted()) {
+            throw new DeviceValidationException("Cannot delete device that is in use");
+        }
 
         deviceRepository.delete(device);
     }
