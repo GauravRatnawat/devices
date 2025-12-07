@@ -81,4 +81,16 @@ class DeviceTest {
                 .hasMessageContaining("State cannot be null");
     }
 
+    @Test
+    void shouldUpdateDeviceState() {
+        // GIVEN - A device
+        Device device = Device.create("iPhone 15", "Apple", DeviceState.AVAILABLE);
+
+        // WHEN - Updating state
+        device.updateState(DeviceState.IN_USE);
+
+        // THEN - State is updated
+        assertThat(device.getState()).isEqualTo(DeviceState.IN_USE);
+    }
+
 }
