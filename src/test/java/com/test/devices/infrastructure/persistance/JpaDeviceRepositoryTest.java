@@ -61,4 +61,19 @@ class JpaDeviceRepositoryTest {
         assertThat(updatedDevice.getState()).isEqualTo(DeviceState.IN_USE);
     }
 
+    @Test
+    @Transactional
+    void shouldFindDeviceById() {
+        // GIVEN
+        Device device = Device.create("Samsung Galaxy S23", "Samsung", DeviceState.AVAILABLE);
+        Device savedDevice = repository.save(device);
+
+        // WHEN
+        Optional<Device> foundDevice = repository.findById(savedDevice.getId());
+
+        // THEN
+        assertThat(foundDevice).isPresent();
+        assertThat(foundDevice.get().getName()).isEqualTo("Samsung Galaxy S23");
+        assertThat(foundDevice.get().getBrand()).isEqualTo("Samsung");
+    }
 }
