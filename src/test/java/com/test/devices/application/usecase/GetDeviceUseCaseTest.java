@@ -73,4 +73,28 @@ class GetDeviceUseCaseTest {
         verify(deviceRepository, never()).findById(any());
     }
 
+    @Test
+    void shouldGetDeviceWithDifferentStates() {
+        // GIVEN - Arrange
+        var inUseDevice = Device.create("Galaxy S24", "Samsung", DeviceState.IN_USE);
+        inUseDevice.setId(2L);
+
+        var inactiveDevice = Device.create("Pixel 8", "Google", DeviceState.INACTIVE);
+        inactiveDevice.setId(3L);
+
+        when(deviceRepository.findById(2L)).thenReturn(Optional.of(inUseDevice));
+        when(deviceRepository.findById(3L)).thenReturn(Optional.of(inactiveDevice));
+
+        // WHEN - Act
+        var response1 = getDeviceUseCase.execute(2L);
+        var response2 = getDeviceUseCase.execute(3L);
+
+        // THEN - Assert
+        assertThat(response1.state()).isEqualTo(DeviceState.IN_USE);
+        assertThat(response2.state()).isEqualTo(DeviceState.INACTIVE);
+
+        verify(deviceRepository, times(1)).findById(2L);
+        verify(deviceRepository, times(1)).findById(3L);
+    }
+
 }
