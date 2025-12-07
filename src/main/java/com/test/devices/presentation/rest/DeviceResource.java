@@ -32,6 +32,9 @@ public class DeviceResource {
     @Inject
     ListDevicesUseCase listDevicesUseCase;
 
+    @Inject
+    DeleteDeviceUseCase deleteDeviceUseCase;
+
     @POST
     public Response createDevice(@Valid CreateDeviceRequest request) {
         logger.info("POST /api/v1/devices - Creating device");
@@ -62,5 +65,13 @@ public class DeviceResource {
         logger.info("GET /api/v1/devices - Listing devices");
         List<DeviceResponse> devices = listDevicesUseCase.execute(brand, state != null ? com.test.devices.domain.model.DeviceState.valueOf(state) : null);
         return Response.ok(devices).build();
+    }
+
+    @DELETE
+    @Path("/{id}")
+    public Response deleteDevice(@PathParam("id") Long id) {
+        logger.infof("DELETE /api/v1/devices/%d - Deleting device", id);
+        deleteDeviceUseCase.execute(id);
+        return Response.noContent().build();
     }
 }
