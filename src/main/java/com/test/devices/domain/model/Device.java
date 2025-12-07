@@ -63,6 +63,10 @@ public class Device {
         return this.state != DeviceState.IN_USE;
     }
 
+    public static Device reconstitute(Long id, String name, String brand, DeviceState state, LocalDateTime creationTime) {
+        return new Device(id, name, brand, state, creationTime);
+    }
+    
     public Long getId() {
         return id;
     }
