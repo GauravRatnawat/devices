@@ -86,4 +86,23 @@ class JpaDeviceRepositoryTest {
         // THEN
         assertThat(foundDevice).isEmpty();
     }
+
+    @Test
+    @Transactional
+    void shouldFindAllDevices() {
+        // GIVEN
+        repository.save(Device.create("iPhone 15", "Apple", DeviceState.AVAILABLE));
+        repository.save(Device.create("Samsung Galaxy S23", "Samsung", DeviceState.IN_USE));
+        repository.save(Device.create("Pixel 8", "Google", DeviceState.INACTIVE));
+
+        // WHEN
+        List<Device> devices = repository.findAll();
+
+        // THEN
+        assertThat(devices).hasSize(3);
+        assertThat(devices).extracting(Device::getName)
+                .containsExactlyInAnyOrder("iPhone 15", "Samsung Galaxy S23", "Pixel 8");
+    }
+
+   
 }
