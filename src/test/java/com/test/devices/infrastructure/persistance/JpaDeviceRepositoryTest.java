@@ -154,5 +154,18 @@ class JpaDeviceRepositoryTest {
                 .containsOnly(DeviceState.AVAILABLE);
     }
 
+    @Test
+    @Transactional
+    void shouldReturnEmptyListWhenNoStateMatches() {
+        // GIVEN
+        repository.save(Device.create("iPhone 15", "Apple", DeviceState.AVAILABLE));
+
+        // WHEN
+        List<Device> devices = repository.findByState(DeviceState.IN_USE);
+
+        // THEN
+        assertThat(devices).isEmpty();
+    }
+
    
 }
