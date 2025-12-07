@@ -224,4 +224,42 @@ class DeviceResourceTest {
                 .statusCode(200)
                 .body("findAll { it.brand == 'Apple' }.size()", greaterThanOrEqualTo(1));
     }
+
+    @Test
+    void shouldDeleteDevice() {
+        // GIVEN - A device not in use
+        String createBody = """
+            {
+                "name": "Test Device",
+                "brand": "Test Brand",
+                "state": "AVAILABLE"
+            }
+            """;
+
+        Integer deviceId = given()
+                .contentType(ContentType.JSON)
+                .body(createBody)
+                .when()
+                .post("/api/v1/devices")
+                .then()
+                .statusCode(201)
+                .extract()
+                .path("id");
+
+        // WHEN - Deleting device
+        given()
+                .pathParam("id", deviceId)
+                .when()
+                .delete("/api/v1/devices/{id}")
+                .then()
+                .statusCode(204);
+
+        // THEN - Device no longer exists
+        given()
+                .pathParam("id", deviceId)
+                .when()
+                .get("/api/v1/devices/{id}")
+                .then()
+                .statusCode(404);
+    }
 }
