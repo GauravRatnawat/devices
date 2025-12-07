@@ -1,6 +1,7 @@
 package com.test.devices.application.usecase;
 
 import com.test.devices.application.exception.DeviceNotFoundException;
+import com.test.devices.application.exception.DeviceValidationException;
 import com.test.devices.domain.model.Device;
 import com.test.devices.domain.model.DeviceState;
 import com.test.devices.domain.repository.DeviceRepository;
@@ -72,6 +73,17 @@ class DeleteDeviceUseCaseTest {
                 .hasMessageContaining("Cannot delete device that is in use");
 
         verify(deviceRepository, times(1)).findById(1L);
+        verify(deviceRepository, never()).delete(any(Device.class));
+    }
+
+    @Test
+    void shouldThrowNullPointerExceptionWhenIdIsNull() {
+        // WHEN/THEN - Exception is thrown
+        assertThatThrownBy(() -> deleteDeviceUseCase.execute(null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessage("Device ID cannot be null");
+
+        verify(deviceRepository, never()).findById(any());
         verify(deviceRepository, never()).delete(any(Device.class));
     }
 }
