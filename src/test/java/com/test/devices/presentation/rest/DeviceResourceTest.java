@@ -103,4 +103,43 @@ class DeviceResourceTest {
     }
 
 
+    @Test
+    void shouldUpdateDeviceState() {
+        // GIVEN - A created device
+        String createBody = """
+            {
+                "name": "iPad Pro",
+                "brand": "Apple",
+                "state": "AVAILABLE"
+            }
+            """;
+
+        Integer deviceId = given()
+                .contentType(ContentType.JSON)
+                .body(createBody)
+                .when()
+                .post("/api/v1/devices")
+                .then()
+                .statusCode(201)
+                .extract()
+                .path("id");
+
+        // WHEN - Updating device state
+        String updateBody = """
+            {
+                "state": "IN_USE"
+            }
+            """;
+
+        // THEN - Device is updated
+        given()
+                .contentType(ContentType.JSON)
+                .pathParam("id", deviceId)
+                .body(updateBody)
+                .when()
+                .put("/api/v1/devices/{id}")
+                .then()
+                .statusCode(200)
+                .body("state", equalTo("IN_USE"));
+    }
 }
