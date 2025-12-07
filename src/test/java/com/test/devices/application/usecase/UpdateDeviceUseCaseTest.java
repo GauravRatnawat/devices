@@ -3,6 +3,7 @@ package com.test.devices.application.usecase;
 import com.test.devices.application.dto.DeviceResponse;
 import com.test.devices.application.dto.UpdateDeviceRequest;
 import com.test.devices.application.exception.DeviceNotFoundException;
+import com.test.devices.application.exception.DeviceValidationException;
 import com.test.devices.domain.model.Device;
 import com.test.devices.domain.model.DeviceState;
 import com.test.devices.domain.repository.DeviceRepository;
@@ -57,6 +58,23 @@ class UpdateDeviceUseCaseTest {
         assertThatThrownBy(() -> updateDeviceUseCase.execute(1L, request))
                 .isInstanceOf(DeviceNotFoundException.class)
                 .hasMessageContaining("Device not found");
+
+        verify(deviceRepository, times(1)).findById(1L);
+        verify(deviceRepository, never()).save(any(Device.class));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUpdatingNameOfInUseDevice() {
+        Device device = Device.create("iPhone 15", "Apple", DeviceState.IN_USE);
+        device.setId(1L);
+
+        UpdateDeviceRequest request = new UpdateDeviceRequest("New Name", null, null);
+
+        when(deviceRepository.findById(1L)).thenReturn(Optional.of(device));
+
+        assertThatThrownBy(() -> updateDeviceUseCase.execute(1L, request))
+                .isInstanceOf(DeviceValidationException.class)
+                .hasMessageContaining("Cannot update name or brand");
 
         verify(deviceRepository, times(1)).findById(1L);
         verify(deviceRepository, never()).save(any(Device.class));
