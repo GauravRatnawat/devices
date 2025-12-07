@@ -35,6 +35,7 @@ public class Device {
     }
 
     public void updateState(DeviceState newState) {
+        Objects.requireNonNull(newState, "State cannot be null");
         this.state = newState;
     }
 
