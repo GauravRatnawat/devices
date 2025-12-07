@@ -109,4 +109,21 @@ class ListDevicesUseCaseTest {
         verify(deviceRepository, times(1)).findAll();
     }
 
+    @Test
+    void shouldIgnoreBlankBrandFilter() {
+        // GIVEN - Arrange
+        var device = Device.create("iPhone 15", "Apple", DeviceState.AVAILABLE);
+        device.setId(1L);
+
+        when(deviceRepository.findAll()).thenReturn(Collections.singletonList(device));
+
+        // WHEN - Act
+        var responses = listDevicesUseCase.execute("   ", null);
+
+        // THEN - Assert
+        assertThat(responses).hasSize(1);
+
+        verify(deviceRepository, times(1)).findAll();
+        verify(deviceRepository, never()).findByBrand(any());
+    }
 }
