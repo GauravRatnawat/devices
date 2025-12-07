@@ -1,0 +1,26 @@
+package com.test.devices.application.usecase;
+
+import com.test.devices.domain.model.Device;
+import com.test.devices.domain.repository.DeviceRepository;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+
+import java.util.Objects;
+
+@ApplicationScoped
+public class DeleteDeviceUseCase {
+
+    @Inject
+    DeviceRepository deviceRepository;
+
+    @Transactional
+    public void execute(Long id) {
+        Objects.requireNonNull(id, "Device ID cannot be null");
+
+        Device device = deviceRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Device not found with id: " + id));
+
+        deviceRepository.delete(device);
+    }
+}

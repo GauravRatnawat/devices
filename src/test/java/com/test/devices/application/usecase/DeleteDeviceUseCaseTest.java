@@ -1,6 +1,7 @@
 package com.test.devices.application.usecase;
 
 import com.test.devices.domain.model.Device;
+import com.test.devices.domain.model.DeviceState;
 import com.test.devices.domain.repository.DeviceRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
