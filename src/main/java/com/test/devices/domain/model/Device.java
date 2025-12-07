@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class Device {
 
-    private final Long id;
+    private Long id;
     private String name;
     private String brand;
     private DeviceState state;
@@ -102,6 +102,10 @@ public class Device {
         if (isInUse()) {
             throw new IllegalStateException("Cannot update name or brand for device in use");
         }
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override
