@@ -142,4 +142,45 @@ class DeviceResourceTest {
                 .statusCode(200)
                 .body("state", equalTo("IN_USE"));
     }
+
+    @Test
+    void shouldNotUpdateNameWhenDeviceInUse() {
+        // GIVEN - A device in use
+        String createBody = """
+            {
+                "name": "MacBook Pro",
+                "brand": "Apple",
+                "state": "IN_USE"
+            }
+            """;
+
+        Integer deviceId = given()
+                .contentType(ContentType.JSON)
+                .body(createBody)
+                .when()
+                .post("/api/v1/devices")
+                .then()
+                .statusCode(201)
+                .extract()
+                .path("id");
+
+        // WHEN - Trying to update name
+        String updateBody = """
+            {
+                "name": "MacBook Air"
+            }
+            """;
+
+        // THEN - Returns 400
+        given()
+                .contentType(ContentType.JSON)
+                .pathParam("id", deviceId)
+                .body(updateBody)
+                .when()
+                .put("/api/v1/devices/{id}")
+                .then()
+                .statusCode(400)
+                .body("message", containsString("Cannot update"));
+    }
+
 }
