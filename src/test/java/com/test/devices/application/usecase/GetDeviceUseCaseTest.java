@@ -1,5 +1,6 @@
 package com.test.devices.application.usecase;
 
+import com.test.devices.application.exception.DeviceNotFoundException;
 import com.test.devices.domain.model.Device;
 import com.test.devices.domain.model.DeviceState;
 import com.test.devices.domain.repository.DeviceRepository;
@@ -12,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -43,6 +45,19 @@ class GetDeviceUseCaseTest {
         assertThat(response.state()).isEqualTo(DeviceState.AVAILABLE);
 
         verify(deviceRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenDeviceNotFound() {
+        // GIVEN - Arrange
+        when(deviceRepository.findById(999L)).thenReturn(Optional.empty());
+
+        // WHEN & THEN - Act & Assert
+        assertThatThrownBy(() -> getDeviceUseCase.execute(999L))
+                .isInstanceOf(DeviceNotFoundException.class)
+                .hasMessageContaining("Device not found");
+
+        verify(deviceRepository, times(1)).findById(999L);
     }
 
 }
