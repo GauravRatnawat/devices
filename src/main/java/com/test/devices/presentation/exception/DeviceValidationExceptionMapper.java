@@ -4,12 +4,17 @@ import com.test.devices.application.exception.DeviceValidationException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
+import org.jboss.logging.Logger;
 
 @Provider
 public class DeviceValidationExceptionMapper implements ExceptionMapper<DeviceValidationException> {
 
+    private static final Logger logger = Logger.getLogger(DeviceValidationExceptionMapper.class);
+
     @Override
     public Response toResponse(DeviceValidationException exception) {
+        logger.warnf("Validation error: %s", exception.getMessage());
+
         ErrorResponse errorResponse = new ErrorResponse(
                 Response.Status.BAD_REQUEST.getStatusCode(),
                 exception.getMessage()
@@ -20,4 +25,3 @@ public class DeviceValidationExceptionMapper implements ExceptionMapper<DeviceVa
                 .build();
     }
 }
-
