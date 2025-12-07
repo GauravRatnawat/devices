@@ -60,4 +60,17 @@ class GetDeviceUseCaseTest {
         verify(deviceRepository, times(1)).findById(999L);
     }
 
+    @Test
+    void shouldThrowExceptionWhenIdIsNull() {
+        // GIVEN - Arrange
+        Long id = null;
+
+        // WHEN & THEN - Act & Assert
+        assertThatThrownBy(() -> getDeviceUseCase.execute(id))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("Device ID cannot be null");
+
+        verify(deviceRepository, never()).findById(any());
+    }
+
 }
