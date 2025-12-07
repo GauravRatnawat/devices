@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
@@ -41,5 +42,18 @@ class DeleteDeviceUseCaseTest {
         // THEN - Device is deleted
         verify(deviceRepository, times(1)).findById(1L);
         verify(deviceRepository, times(1)).delete(device);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenDeviceNotFound() {
+        // GIVEN - Non-existent device
+        when(deviceRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // WHEN/THEN - Exception is thrown
+        assertThatThrownBy(() -> deleteDeviceUseCase.execute(1L))
+                .isInstanceOf(DeviceNotFoundException.class);
+
+        verify(deviceRepository, times(1)).findById(1L);
+        verify(deviceRepository, never()).delete(any(Device.class));
     }
 }
