@@ -34,6 +34,10 @@ public class Device {
         return new Device(null, name, brand, state, LocalDateTime.now());
     }
 
+    public void updateState(DeviceState newState) {
+        this.state = newState;
+    }
+
     public Long getId() {
         return id;
     }
