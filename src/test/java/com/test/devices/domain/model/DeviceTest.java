@@ -128,4 +128,16 @@ class DeviceTest {
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("Cannot update name or brand for device in use");
     }
+
+    @Test
+    void shouldAllowDeletionWhenNotInUse() {
+        // GIVEN - A device not in use
+        Device device = Device.create("iPhone 15", "Apple", DeviceState.AVAILABLE);
+
+        // WHEN - Checking if can be deleted
+        boolean canDelete = device.canBeDeleted();
+
+        // THEN - Can be deleted
+        assertThat(canDelete).isTrue();
+    }
 }
