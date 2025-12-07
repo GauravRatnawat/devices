@@ -88,4 +88,19 @@ class DeviceResourceTest {
                 .body("brand", equalTo("Samsung"));
     }
 
+    @Test
+    void shouldReturnNotFoundForNonExistentDevice() {
+        // GIVEN - Non-existent device ID
+
+        // WHEN/THEN - Returns 404
+        given()
+                .pathParam("id", 99999)
+                .when()
+                .get("/api/v1/devices/{id}")
+                .then()
+                .statusCode(404)
+                .body("message", containsString("Device not found"));
+    }
+
+
 }
