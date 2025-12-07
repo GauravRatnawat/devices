@@ -262,4 +262,35 @@ class DeviceResourceTest {
                 .then()
                 .statusCode(404);
     }
+
+    @Test
+    void shouldNotDeleteDeviceInUse() {
+        // GIVEN - A device in use
+        String createBody = """
+            {
+                "name": "Active Device",
+                "brand": "Brand",
+                "state": "IN_USE"
+            }
+            """;
+
+        Integer deviceId = given()
+                .contentType(ContentType.JSON)
+                .body(createBody)
+                .when()
+                .post("/api/v1/devices")
+                .then()
+                .statusCode(201)
+                .extract()
+                .path("id");
+
+        // WHEN/THEN - Delete returns 400
+        given()
+                .pathParam("id", deviceId)
+                .when()
+                .delete("/api/v1/devices/{id}")
+                .then()
+                .statusCode(400)
+                .body("message", containsString("Cannot delete"));
+    }
 }
