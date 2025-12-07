@@ -7,6 +7,7 @@ import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 
 @QuarkusTest
 class DeviceResourceTest {
@@ -181,6 +182,26 @@ class DeviceResourceTest {
                 .then()
                 .statusCode(400)
                 .body("message", containsString("Cannot update"));
+    }
+
+    @Test
+    void shouldListAllDevices() {
+        // GIVEN - Multiple devices
+        given().contentType(ContentType.JSON).body("""
+            {"name": "Device 1", "brand": "Brand A", "state": "AVAILABLE"}
+            """).post("/api/v1/devices");
+
+        given().contentType(ContentType.JSON).body("""
+            {"name": "Device 2", "brand": "Brand B", "state": "IN_USE"}
+            """).post("/api/v1/devices");
+
+        // WHEN/THEN - Listing devices returns array
+        given()
+                .when()
+                .get("/api/v1/devices")
+                .then()
+                .statusCode(200)
+                .body("size()", greaterThanOrEqualTo(2));
     }
 
 }
