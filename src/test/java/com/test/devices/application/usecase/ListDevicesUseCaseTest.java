@@ -126,4 +126,23 @@ class ListDevicesUseCaseTest {
         verify(deviceRepository, times(1)).findAll();
         verify(deviceRepository, never()).findByBrand(any());
     }
+
+    @Test
+    void shouldPrioritizeBrandFilterOverStateFilter() {
+        // GIVEN - Arrange
+        var device = Device.create("iPhone 15", "Apple", DeviceState.AVAILABLE);
+        device.setId(1L);
+
+        when(deviceRepository.findByBrand("Apple")).thenReturn(Collections.singletonList(device));
+
+        // WHEN - Act
+        var responses = listDevicesUseCase.execute("Apple", DeviceState.AVAILABLE);
+
+        // THEN - Assert
+        assertThat(responses).hasSize(1);
+
+        verify(deviceRepository, times(1)).findByBrand("Apple");
+        verify(deviceRepository, never()).findByState(any());
+        verify(deviceRepository, never()).findAll();
+    }
 }
