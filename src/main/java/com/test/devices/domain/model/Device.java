@@ -59,6 +59,10 @@ public class Device {
         }
     }
 
+    public boolean canBeDeleted() {
+        return this.state != DeviceState.IN_USE;
+    }
+
     public Long getId() {
         return id;
     }
