@@ -54,4 +54,38 @@ class DeviceResourceTest {
                 .then()
                 .statusCode(400);
     }
+
+    @Test
+    void shouldGetDeviceById() {
+        // GIVEN - A created device
+        String createBody = """
+            {
+                "name": "Galaxy S24",
+                "brand": "Samsung",
+                "state": "AVAILABLE"
+            }
+            """;
+
+        Integer deviceId = given()
+                .contentType(ContentType.JSON)
+                .body(createBody)
+                .when()
+                .post("/api/v1/devices")
+                .then()
+                .statusCode(201)
+                .extract()
+                .path("id");
+
+        // WHEN/THEN - Getting device by ID returns 200
+        given()
+                .pathParam("id", deviceId)
+                .when()
+                .get("/api/v1/devices/{id}")
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(deviceId))
+                .body("name", equalTo("Galaxy S24"))
+                .body("brand", equalTo("Samsung"));
+    }
+
 }
