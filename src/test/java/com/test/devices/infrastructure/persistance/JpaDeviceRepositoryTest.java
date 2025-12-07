@@ -183,5 +183,17 @@ class JpaDeviceRepositoryTest {
         assertThat(deletedDevice).isEmpty();
     }
 
+    @Test
+    @Transactional
+    void shouldHandleDeleteNonExistentDevice() {
+        // GIVEN
+        Device device = Device.create("iPhone 15", "Apple", DeviceState.AVAILABLE);
+        device.setId(999L); // Non-existent ID
 
+        // WHEN - Should not throw exception
+        repository.delete(device);
+
+        // THEN - No exception should be thrown
+        assertThat(repository.findById(999L)).isEmpty();
+    }
 }
