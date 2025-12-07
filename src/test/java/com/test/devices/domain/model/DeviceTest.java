@@ -26,4 +26,15 @@ class DeviceTest {
         assertThat(device.getCreationTime()).isNotNull();
         assertThat(device.getCreationTime()).isBefore(LocalDateTime.now().plusSeconds(1));
     }
+
+    @Test
+    void shouldThrowExceptionWhenCreatingDeviceWithNullName() {
+        // GIVEN - Null name
+        String name = null;
+
+        // WHEN/THEN - Creating device throws exception
+        assertThatThrownBy(() -> Device.create(name, "Apple", DeviceState.AVAILABLE))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("Name cannot be null");
+    }
 }
