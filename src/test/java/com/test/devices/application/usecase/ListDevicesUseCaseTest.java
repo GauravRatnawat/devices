@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -93,4 +94,19 @@ class ListDevicesUseCaseTest {
         verify(deviceRepository, never()).findAll();
         verify(deviceRepository, never()).findByBrand(any());
     }
+
+    @Test
+    void shouldReturnEmptyListWhenNoDevicesFound() {
+        // GIVEN - Arrange
+        when(deviceRepository.findAll()).thenReturn(Collections.emptyList());
+
+        // WHEN - Act
+        var responses = listDevicesUseCase.execute(null, null);
+
+        // THEN - Assert
+        assertThat(responses).isEmpty();
+
+        verify(deviceRepository, times(1)).findAll();
+    }
+
 }
