@@ -136,5 +136,23 @@ class JpaDeviceRepositoryTest {
         assertThat(devices).isEmpty();
     }
 
+    @Test
+    @Transactional
+    void shouldFindDevicesByState() {
+        // GIVEN
+        repository.save(Device.create("iPhone 15", "Apple", DeviceState.AVAILABLE));
+        repository.save(Device.create("iPhone 14", "Apple", DeviceState.AVAILABLE));
+        repository.save(Device.create("Samsung Galaxy S23", "Samsung", DeviceState.IN_USE));
+        repository.save(Device.create("Pixel 8", "Google", DeviceState.INACTIVE));
+
+        // WHEN
+        List<Device> availableDevices = repository.findByState(DeviceState.AVAILABLE);
+
+        // THEN
+        assertThat(availableDevices).hasSize(2);
+        assertThat(availableDevices).extracting(Device::getState)
+                .containsOnly(DeviceState.AVAILABLE);
+    }
+
    
 }
