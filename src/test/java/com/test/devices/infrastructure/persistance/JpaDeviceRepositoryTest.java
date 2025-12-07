@@ -123,5 +123,18 @@ class JpaDeviceRepositoryTest {
                 .containsExactlyInAnyOrder("iPhone 15", "iPhone 14");
     }
 
+    @Test
+    @Transactional
+    void shouldReturnEmptyListWhenNoBrandMatches() {
+        // GIVEN
+        repository.save(Device.create("iPhone 15", "Apple", DeviceState.AVAILABLE));
+
+        // WHEN
+        List<Device> devices = repository.findByBrand("Samsung");
+
+        // THEN
+        assertThat(devices).isEmpty();
+    }
+
    
 }
