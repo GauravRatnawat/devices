@@ -1,7 +1,13 @@
 package com.test.devices.presentation.exception;
 
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+@Schema(description = "Error response returned when an API operation fails")
 public class ErrorResponse {
+    @Schema(description = "HTTP status code", example = "404")
     private int status;
+
+    @Schema(description = "Error message describing what went wrong", example = "Device not found with id: 123")
     private String message;
 
     public ErrorResponse() {
@@ -28,4 +34,3 @@ public class ErrorResponse {
         this.message = message;
     }
 }
-

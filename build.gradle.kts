@@ -24,6 +24,8 @@ dependencies {
     implementation("io.quarkus:quarkus-hibernate-validator")
     implementation("io.quarkus:quarkus-jdbc-h2")
     implementation("io.quarkus:quarkus-jdbc-postgresql")
+    implementation("io.quarkus:quarkus-smallrye-openapi")
+    implementation("io.quarkus:quarkus-smallrye-health")
 
     // Testing
     testImplementation("io.quarkus:quarkus-junit5")
