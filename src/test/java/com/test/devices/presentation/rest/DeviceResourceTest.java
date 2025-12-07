@@ -35,4 +35,23 @@ class DeviceResourceTest {
                 .body("id", notNullValue())
                 .body("creationTime", notNullValue());
     }
+
+    @Test
+    void shouldReturnBadRequestWhenCreatingDeviceWithMissingFields() {
+        // GIVEN - Invalid request (missing required fields)
+        String requestBody = """
+            {
+                "name": ""
+            }
+            """;
+
+        // WHEN/THEN - Returns 400
+        given()
+                .contentType(ContentType.JSON)
+                .body(requestBody)
+                .when()
+                .post("/api/v1/devices")
+                .then()
+                .statusCode(400);
+    }
 }
