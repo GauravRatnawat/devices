@@ -20,10 +20,24 @@ public class DeviceResource {
     @Inject
     CreateDeviceUseCase createDeviceUseCase;
 
+    @Inject
+    GetDeviceUseCase getDeviceUseCase;
+
     @POST
     public Response createDevice(@Valid CreateDeviceRequest request) {
         logger.info("POST /api/v1/devices - Creating device");
         DeviceResponse response = createDeviceUseCase.execute(request);
         return Response.status(Response.Status.CREATED).entity(response).build();
     }
+
+    @GET
+    @Path("/{id}")
+    public Response getDevice(
+            @PathParam("id") Long id) {
+        logger.infof("GET /api/v1/devices/%d - Fetching device", id);
+        DeviceResponse response = getDeviceUseCase.execute(id);
+        return Response.ok(response).build();
+    }
+
+
 }
