@@ -70,4 +70,15 @@ class DeviceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Name cannot be blank");
     }
+
+    @Test
+    void shouldThrowExceptionWhenCreatingDeviceWithNullState() {
+        // GIVEN - Null state
+
+        // WHEN/THEN - Creating device throws exception
+        assertThatThrownBy(() -> Device.create("iPhone", "Apple", null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("State cannot be null");
+    }
+
 }
