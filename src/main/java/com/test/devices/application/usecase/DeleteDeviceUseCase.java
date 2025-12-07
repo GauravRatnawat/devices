@@ -1,5 +1,6 @@
 package com.test.devices.application.usecase;
 
+import com.test.devices.application.exception.DeviceNotFoundException;
 import com.test.devices.domain.model.Device;
 import com.test.devices.domain.repository.DeviceRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -19,7 +20,7 @@ public class DeleteDeviceUseCase {
         Objects.requireNonNull(id, "Device ID cannot be null");
 
         Device device = deviceRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Device not found with id: " + id));
+                .orElseThrow(() -> new DeviceNotFoundException(id));
 
         deviceRepository.delete(device);
     }
