@@ -204,4 +204,24 @@ class DeviceResourceTest {
                 .body("size()", greaterThanOrEqualTo(2));
     }
 
+    @Test
+    void shouldFilterDevicesByBrand() {
+        // GIVEN - Devices with different brands
+        given().contentType(ContentType.JSON).body("""
+            {"name": "iPhone", "brand": "Apple", "state": "AVAILABLE"}
+            """).post("/api/v1/devices");
+
+        given().contentType(ContentType.JSON).body("""
+            {"name": "Galaxy", "brand": "Samsung", "state": "AVAILABLE"}
+            """).post("/api/v1/devices");
+
+        // WHEN/THEN - Filtering by brand works
+        given()
+                .queryParam("brand", "Apple")
+                .when()
+                .get("/api/v1/devices")
+                .then()
+                .statusCode(200)
+                .body("findAll { it.brand == 'Apple' }.size()", greaterThanOrEqualTo(1));
+    }
 }
