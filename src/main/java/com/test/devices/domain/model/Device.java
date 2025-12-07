@@ -39,6 +39,26 @@ public class Device {
         this.state = newState;
     }
 
+    public void updateDetails(String newName, String newBrand) {
+        if (this.state == DeviceState.IN_USE) {
+            throw new IllegalStateException("Cannot update name or brand for device in use");
+        }
+
+        if (newName != null) {
+            if (newName.isBlank()) {
+                throw new IllegalArgumentException("Name cannot be blank");
+            }
+            this.name = newName;
+        }
+
+        if (newBrand != null) {
+            if (newBrand.isBlank()) {
+                throw new IllegalArgumentException("Brand cannot be blank");
+            }
+            this.brand = newBrand;
+        }
+    }
+
     public Long getId() {
         return id;
     }
