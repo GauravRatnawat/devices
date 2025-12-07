@@ -93,4 +93,18 @@ class DeviceTest {
         assertThat(device.getState()).isEqualTo(DeviceState.IN_USE);
     }
 
+    @Test
+    void shouldThrowExceptionWhenUpdatingDeviceWithNullState() {
+        // GIVEN - A device
+        Device device = Device.create("iPhone 15", "Apple", DeviceState.AVAILABLE);
+
+        // WHEN - Updating state
+        device.updateState(null);
+
+        // THEN 
+        assertThatThrownBy(() -> device.updateState(null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("State cannot be null");
+    }
+
 }
