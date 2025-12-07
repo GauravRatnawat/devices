@@ -1,5 +1,6 @@
 package com.test.devices.application.usecase;
 
+import com.test.devices.application.dto.DeviceResponse;
 import com.test.devices.domain.model.Device;
 import com.test.devices.domain.model.DeviceState;
 import com.test.devices.domain.repository.DeviceRepository;
@@ -144,5 +145,28 @@ class ListDevicesUseCaseTest {
         verify(deviceRepository, times(1)).findByBrand("Apple");
         verify(deviceRepository, never()).findByState(any());
         verify(deviceRepository, never()).findAll();
+    }
+
+    @Test
+    void shouldListDevicesWithDifferentStates() {
+        // GIVEN - Arrange
+        var availableDevice = Device.create("Device 1", "Brand A", DeviceState.AVAILABLE);
+        availableDevice.setId(1L);
+        var inUseDevice = Device.create("Device 2", "Brand B", DeviceState.IN_USE);
+        inUseDevice.setId(2L);
+        var inactiveDevice = Device.create("Device 3", "Brand C", DeviceState.INACTIVE);
+        inactiveDevice.setId(3L);
+
+        when(deviceRepository.findAll()).thenReturn(Arrays.asList(availableDevice, inUseDevice, inactiveDevice));
+
+        // WHEN - Act
+        var responses = listDevicesUseCase.execute(null, null);
+
+        // THEN - Assert
+        assertThat(responses).hasSize(3);
+        assertThat(responses).extracting(DeviceResponse::state)
+                .containsExactlyInAnyOrder(DeviceState.AVAILABLE, DeviceState.IN_USE, DeviceState.INACTIVE);
+
+        verify(deviceRepository, times(1)).findAll();
     }
 }
