@@ -71,4 +71,26 @@ class ListDevicesUseCaseTest {
         verify(deviceRepository, never()).findAll();
         verify(deviceRepository, never()).findByState(any());
     }
+
+    @Test
+    void shouldListDevicesByState() {
+        // GIVEN - Arrange
+        var device1 = Device.create("iPhone 15", "Apple", DeviceState.AVAILABLE);
+        device1.setId(1L);
+        var device2 = Device.create("Pixel 8", "Google", DeviceState.AVAILABLE);
+        device2.setId(2L);
+
+        when(deviceRepository.findByState(DeviceState.AVAILABLE)).thenReturn(Arrays.asList(device1, device2));
+
+        // WHEN - Act
+        var responses = listDevicesUseCase.execute(null, DeviceState.AVAILABLE);
+
+        // THEN - Assert
+        assertThat(responses).hasSize(2);
+        assertThat(responses).allMatch(r -> r.state().equals(DeviceState.AVAILABLE));
+
+        verify(deviceRepository, times(1)).findByState(DeviceState.AVAILABLE);
+        verify(deviceRepository, never()).findAll();
+        verify(deviceRepository, never()).findByBrand(any());
+    }
 }
