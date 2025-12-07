@@ -29,4 +29,52 @@ public class JpaDeviceRepository implements DeviceRepository {
 
         return entity.toDomain();
     }
+
+    @Override
+    public Optional<Device> findById(Long id) {
+        DeviceEntity entity = entityManager.find(DeviceEntity.class, id);
+        return Optional.ofNullable(entity).map(DeviceEntity::toDomain);
+    }
+
+    @Override
+    public List<Device> findAll() {
+        return entityManager.createQuery("SELECT d FROM DeviceEntity d", DeviceEntity.class)
+            .getResultList()
+            .stream()
+            .map(DeviceEntity::toDomain)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Device> findByBrand(String brand) {
+        return entityManager.createQuery(
+                "SELECT d FROM DeviceEntity d WHERE d.brand = :brand",
+                DeviceEntity.class)
+            .setParameter("brand", brand)
+            .getResultList()
+            .stream()
+            .map(DeviceEntity::toDomain)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Device> findByState(DeviceState state) {
+        return entityManager.createQuery(
+                "SELECT d FROM DeviceEntity d WHERE d.state = :state",
+                DeviceEntity.class)
+            .setParameter("state", state)
+            .getResultList()
+            .stream()
+            .map(DeviceEntity::toDomain)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public void delete(Device device) {
+        DeviceEntity entity = entityManager.find(DeviceEntity.class, device.getId());
+        if (entity != null) {
+            entityManager.remove(entity);
+        }
+    }
+
 }
