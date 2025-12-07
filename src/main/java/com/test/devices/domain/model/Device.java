@@ -5,11 +5,11 @@ import java.util.Objects;
 
 public class Device {
 
-    private Long id;
+    private final Long id;
     private String name;
     private String brand;
     private DeviceState state;
-    private LocalDateTime creationTime;
+    private final LocalDateTime creationTime;
 
     private Device(Long id, String name, String brand, DeviceState state, LocalDateTime creationTime) {
         this.id = id;
@@ -20,41 +20,32 @@ public class Device {
     }
 
     public static Device create(String name, String brand, DeviceState state) {
-        Objects.requireNonNull(name, "Name cannot be null");
-        Objects.requireNonNull(brand, "Brand cannot be null");
-        Objects.requireNonNull(state, "State cannot be null");
-
-        if (name.isBlank()) {
-            throw new IllegalArgumentException("Name cannot be blank");
-        }
-        if (brand.isBlank()) {
-            throw new IllegalArgumentException("Brand cannot be blank");
-        }
+        validateName(name);
+        validateBrand(brand);
+        validateState(state);
 
         return new Device(null, name, brand, state, LocalDateTime.now());
     }
 
+    public static Device reconstitute(Long id, String name, String brand, DeviceState state, LocalDateTime creationTime) {
+        return new Device(id, name, brand, state, creationTime);
+    }
+
     public void updateState(DeviceState newState) {
-        Objects.requireNonNull(newState, "State cannot be null");
+        validateState(newState);
         this.state = newState;
     }
 
     public void updateDetails(String newName, String newBrand) {
-        if (this.state == DeviceState.IN_USE) {
-            throw new IllegalStateException("Cannot update name or brand for device in use");
-        }
+        validateNotInUse();
 
         if (newName != null) {
-            if (newName.isBlank()) {
-                throw new IllegalArgumentException("Name cannot be blank");
-            }
+            validateName(newName);
             this.name = newName;
         }
 
         if (newBrand != null) {
-            if (newBrand.isBlank()) {
-                throw new IllegalArgumentException("Brand cannot be blank");
-            }
+            validateBrand(newBrand);
             this.brand = newBrand;
         }
     }
@@ -63,10 +54,11 @@ public class Device {
         return this.state != DeviceState.IN_USE;
     }
 
-    public static Device reconstitute(Long id, String name, String brand, DeviceState state, LocalDateTime creationTime) {
-        return new Device(id, name, brand, state, creationTime);
+    public boolean isInUse() {
+        return this.state == DeviceState.IN_USE;
     }
-    
+
+    // Getters
     public Long getId() {
         return id;
     }
@@ -85,5 +77,54 @@ public class Device {
 
     public LocalDateTime getCreationTime() {
         return creationTime;
+    }
+
+    // Private validation methods
+    private static void validateName(String name) {
+        Objects.requireNonNull(name, "Name cannot be null");
+        if (name.isBlank()) {
+            throw new IllegalArgumentException("Name cannot be blank");
+        }
+    }
+
+    private static void validateBrand(String brand) {
+        Objects.requireNonNull(brand, "Brand cannot be null");
+        if (brand.isBlank()) {
+            throw new IllegalArgumentException("Brand cannot be blank");
+        }
+    }
+
+    private static void validateState(DeviceState state) {
+        Objects.requireNonNull(state, "State cannot be null");
+    }
+
+    private void validateNotInUse() {
+        if (isInUse()) {
+            throw new IllegalStateException("Cannot update name or brand for device in use");
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Device device = (Device) o;
+        return Objects.equals(id, device.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Device{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", brand='" + brand + '\'' +
+                ", state=" + state +
+                ", creationTime=" + creationTime +
+                '}';
     }
 }
