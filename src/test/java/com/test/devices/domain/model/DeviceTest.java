@@ -117,4 +117,15 @@ class DeviceTest {
         assertThat(device.getName()).isEqualTo("iPhone 15 Pro");
         assertThat(device.getBrand()).isEqualTo("Apple Inc");
     }
+
+    @Test
+    void shouldNotUpdateDeviceDetailsWhenInUse() {
+        // GIVEN - A device in use
+        Device device = Device.create("iPhone 15", "Apple", DeviceState.IN_USE);
+
+        // WHEN/THEN - Updating details throws exception
+        assertThatThrownBy(() -> device.updateDetails("iPhone 15 Pro", "Apple Inc"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Cannot update name or brand for device in use");
+    }
 }
