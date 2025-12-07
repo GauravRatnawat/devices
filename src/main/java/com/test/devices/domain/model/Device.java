@@ -21,6 +21,7 @@ public class Device {
 
     public static Device create(String name, String brand, DeviceState state) {
         Objects.requireNonNull(name, "Name cannot be null");
+        Objects.requireNonNull(brand, "Brand cannot be null");
         if (name.isBlank()) {
             throw new IllegalArgumentException("Name cannot be blank");
         }
