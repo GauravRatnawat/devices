@@ -76,4 +76,14 @@ class JpaDeviceRepositoryTest {
         assertThat(foundDevice.get().getName()).isEqualTo("Samsung Galaxy S23");
         assertThat(foundDevice.get().getBrand()).isEqualTo("Samsung");
     }
+
+    @Test
+    @Transactional
+    void shouldReturnEmptyWhenDeviceNotFound() {
+        // WHEN
+        Optional<Device> foundDevice = repository.findById(999L);
+
+        // THEN
+        assertThat(foundDevice).isEmpty();
+    }
 }
