@@ -152,4 +152,24 @@ class DeviceTest {
         // THEN - Cannot be deleted
         assertThat(canDelete).isFalse();
     }
+
+    @Test
+    void shouldReconstituteDeviceFromPersistence() {
+        // GIVEN - Persisted device data
+        Long id = 1L;
+        String name = "iPhone 15";
+        String brand = "Apple";
+        DeviceState state = DeviceState.AVAILABLE;
+        LocalDateTime creationTime = LocalDateTime.now().minusDays(1);
+
+        // WHEN - Reconstituting device
+        Device device = Device.reconstitute(id, name, brand, state, creationTime);
+
+        // THEN - Device has all properties
+        assertThat(device.getId()).isEqualTo(id);
+        assertThat(device.getName()).isEqualTo(name);
+        assertThat(device.getBrand()).isEqualTo(brand);
+        assertThat(device.getState()).isEqualTo(state);
+        assertThat(device.getCreationTime()).isEqualTo(creationTime);
+    }
 }
